@@ -38,7 +38,7 @@ def main():
             board[i] = {e}
     
     # The Real Shit
-    p = Jigoku(board)
+    p = Sudoku(board)
     p.solve_fancy()
 
 if __name__ == "__main__":
