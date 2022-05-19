@@ -1,7 +1,7 @@
 import numpy as np
 from puzzle_solver import Puzzle
     
-class Jigoku(Puzzle):
+class Sudoku(Puzzle):
     def __init__(self, start_board: np.ndarray):
         super().__init__(start_board, None)
 
