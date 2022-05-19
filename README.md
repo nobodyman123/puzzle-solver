@@ -17,3 +17,7 @@ Solves various different types of puzzles using the wave function collapse algor
    - generating an easily shareable code that uniquely identifies the puzzle type and board state
    - loading such a code into the program
    - settings (?)
+ * and finally after all that other stuff i will start making solvers and input guis for as many puzzles as possible
+
+## Goal
+My ultimate goal is to have solvers for every type of puzzle that has ever been featured in the VTK Gent Manna
