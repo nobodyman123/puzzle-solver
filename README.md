@@ -3,7 +3,7 @@ Solves various different types of puzzles using the wave function collapse algor
 
 ## How to use
 * run indiviual puzzle scripts if you want to use the sucky input
-* run gui.py to open the gui
+* run "gui.py" to open the gui
 * loading "Test" will give you a preview of the user experience for the gui
 * loading "Jigoku" will do something but you cant actually solve yet
 
