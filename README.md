@@ -1,6 +1,12 @@
 # puzzle-solver
 Solves various different types of puzzles using the wave function collapse algorithm + recursion
 
+## How to use
+* run indiviual puzzle scripts if you want to use the sucky input
+* run gui.py to open the gui
+* loading "Test" will give you a preview of the user experience for the gui
+* loading "Jigoku" will do something but you cant actually solve yet
+
 ## Dev plan
  * puzzles that are currently implemented work, but input sucks
  * jigsaw sudoku may be added in the near future, otherwise july 2022 or so
@@ -11,9 +17,3 @@ Solves various different types of puzzles using the wave function collapse algor
    - generating an easily shareable code that uniquely identifies the puzzle type and board state
    - loading such a code into the program
    - settings (?)
-
-## How to use
-* run indiviual puzzle scripts if you want to use the sucky input
-* run gui.py to open the gui
-* loading "Test" will give you a preview of the user experience for the gui
-* loading "Jigoku" will do something but you cant actually solve yet
