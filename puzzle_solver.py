@@ -66,12 +66,12 @@ class Puzzle():
                     return json.load(f)
                 except:
                     if "yes" == input("Cannot read stats , do you wish to reset \"{Puzzle._stats_path}\"? (yes/no)"):
-                        Puzzle.reset_stats()
+                        Puzzle.reset_all_stats()
                     else:
                         return
         except:
             if "yes" == input("Cannot open \"{Puzzle._stats_path}\", do you wish to reset it? (yes/no)"):
-                Puzzle.reset_stats()
+                Puzzle.reset_all_stats()
             else:
                 return
     
@@ -94,7 +94,8 @@ class Puzzle():
             Puzzle.write_stats(stats)
 
     def _update_stats(self, solve_time):
-        if not (stats := Puzzle.load_stats()):
+        stats = Puzzle.load_stats()
+        if stats is None:
             return
         
         puzzle_name = self.__class__.__name__
