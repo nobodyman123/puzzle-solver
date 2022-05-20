@@ -8,20 +8,26 @@ def solve():
     def sub_solve():
         global selected_puzzle
         global selected_gui
-
+        global solve_button
+        global load_button
+        
         if selected_puzzle is None:
             print("[ERR] No puzzle selected")
             return
         
+        solve_button.config(state = tk.DISABLED)
+        load_button.config(state = tk.DISABLED)
         try:
             puzzle_args = selected_gui.get_board_state()
             puzzle = selected_puzzle(*puzzle_args)
             solved_board = puzzle.solve_fancy()
             selected_gui.set_board_state(solved_board)
+            update_stats_frame()
         except NotImplementedError as err:
             print(f"[ERR] {err}")
-        
-        update_stats_frame()
+        finally:
+            solve_button.config(state = tk.NORMAL)
+            load_button.config(state = tk.NORMAL)
     
     Thread(target = sub_solve).start()
 
@@ -69,7 +75,6 @@ def load_puzzle():
         print("[ERR] Please select a puzzle to load")
         return
     
-    selected_puzzle = None
     p, = puzzles_list.curselection()
     selected_name = puzzles[p]
     exec(f"from {selected_name} import {selected_name}")
@@ -83,6 +88,8 @@ def load_puzzle():
         update_stats_frame()
         print(selected_name)
     except NotImplementedError as err:
+        selected_puzzle = None
+        selected_gui = None
         average.config(text = "N/A")
         fastest.config(text = "N/A")
         print(f"[ERR] {err}")
@@ -102,7 +109,7 @@ class StdoutRedirector():
 root = tk.Tk()
 root.minsize(550, 350)
 root.title("Puzzle Solver")
-#root.icon
+root.iconphoto(True, tk.PhotoImage(file = "icon.png"))
 root.rowconfigure(0, weight=1)
 root.rowconfigure(1, weight=0)
 root.columnconfigure(0, weight = 1)
@@ -189,7 +196,8 @@ puzzles_frame.rowconfigure(1, weight = 1)
 puzzles_list = tk.Listbox(puzzles_frame, selectmode = tk.SINGLE)
 puzzles_list.grid(row = 0, column = 0, columnspan = 2, sticky = tk.NSEW)
 
-tk.Button(puzzles_frame, text = "Load", padx = 10, command = load_puzzle).grid(row = 1, column = 0, padx = 5)
+load_button = tk.Button(puzzles_frame, text = "Load", padx = 10, command = load_puzzle)
+load_button.grid(row = 1, column = 0, padx = 5)
 tk.Button(puzzles_frame, text = "Refresh", padx = 10, command = refresh_puzzle_list).grid(row = 1, column = 1, padx = 5)
 
 puzzles = load_puzzle_list()
