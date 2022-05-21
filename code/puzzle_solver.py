@@ -68,12 +68,12 @@ class Puzzle():
                     if "yes" == input("Cannot read stats , do you wish to reset \"{Puzzle._stats_path}\"? (yes/no)"):
                         Puzzle.reset_all_stats()
                     else:
-                        return
+                        return {}
         except:
             if "yes" == input("Cannot open \"{Puzzle._stats_path}\", do you wish to reset it? (yes/no)"):
                 Puzzle.reset_all_stats()
             else:
-                return
+                return {}
     
     @classmethod
     def write_stats(self, stats):
@@ -95,8 +95,6 @@ class Puzzle():
 
     def _update_stats(self, solve_time):
         stats = Puzzle.load_stats()
-        if stats is None:
-            return
         
         puzzle_name = self.__class__.__name__
         if puzzle_name in stats:
