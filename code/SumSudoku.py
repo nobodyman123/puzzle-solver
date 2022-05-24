@@ -8,10 +8,7 @@ class SumSudoku(Puzzle):
     def reduce(self, board):
         reverse_sum_boxes, end_sums = self.reduction_args
         # Rows/Columns/Boxes
-        certain = []
-        for pos, e in np.ndenumerate(board):
-            if len(e) == 1:
-                certain.append(pos)
+        certain = [pos for (pos, e) in np.ndenumerate(board) if len(e) == 1]
         
         for i, j in certain:
             value = board[i,j]
@@ -35,16 +32,12 @@ class SumSudoku(Puzzle):
                 board[0,0] = set()
                 return
             
-            if len(temp_pl) == 0 and temp_sum != 0:
+            if len(temp_pl) == 1:
+                pos, = temp_pl
+                board[pos] = board[pos] & {temp_sum}
+            elif len(temp_pl) == 0 and temp_sum != 0:
                 board[0,0] = set()
                 return
-            elif len(temp_pl) == 1:
-                pos = temp_pl[0]
-                if temp_sum in board[pos]:
-                    board[pos] = {temp_sum}
-                else:
-                    board[0,0] = set()
-                    return 
 
 def main():
     # Input

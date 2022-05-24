@@ -8,10 +8,7 @@ class SkyscraperSudoku(Puzzle):
     def reduce(self, board):
         skyscrapers = self.reduction_args
         # Rows/Columns/Boxes
-        certain = []
-        for pos, e in np.ndenumerate(board):
-            if len(e) == 1:
-                certain.append(pos)
+        certain = [pos for (pos, e) in np.ndenumerate(board) if len(e) == 1]
         
         for i, j in certain:
             value = board[i,j]

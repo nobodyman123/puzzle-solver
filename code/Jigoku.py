@@ -35,10 +35,7 @@ class Jigoku(Puzzle):
                     return
 
         # Rows/Columns/Boxes
-        certain = []
-        for pos, e in np.ndenumerate(board):
-            if len(e) == 1:
-                certain.append(pos)
+        certain = [pos for (pos, e) in np.ndenumerate(board) if len(e) == 1]
         
         for i, j in certain:
             value = board[i,j]

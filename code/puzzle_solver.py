@@ -146,3 +146,6 @@ class Puzzle():
                         print(f"DONE ({solve_time:.3f} s)")
                         self._update_stats(solve_time)
                     return r
+            if n == 0:
+                print(f"\a")
+                print("NO SOLUTION (please check input)")
