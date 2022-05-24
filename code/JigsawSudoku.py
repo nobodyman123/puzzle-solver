@@ -14,10 +14,8 @@ class JigsawSudoku(Puzzle):
             value = board[i,j]
             board[i,:] -= value
             board[:,j] -= value
-            # why  no work ;-; <
             for pos in zip(*np.where(boxes == boxes[i,j])):
                 board[pos] = board[pos] - value
-            # >
             board[i,j] = value
 
 def main():
