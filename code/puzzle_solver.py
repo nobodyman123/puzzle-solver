@@ -4,9 +4,8 @@ from time import time
 
 # TODO: 
 # 1) GUI
-#   using tkinter (OK)
-#   base layout: running time, solve button, stats bar (OK)
-#   + puzzle specific visual input
+#       puzzle specific visual input
+#       toolbar
 # 2) settings
 
 class PuzzleGui():
@@ -38,51 +37,52 @@ class Puzzle():
                 pos, entropy = (i, len(e))
         return pos, entropy
 
+    # you can study this method to understand the basic solving algorithm
     def solve(self, board=None):
         if board is None: board = self.start_board.copy()
 
-        self.reduce(board)
-        pos, entropy = self.get_entropy(board)
+        self.reduce(board) # use reduction rules defined in reduce method
+        pos, entropy = self.get_entropy(board) # finds a position with shortest set length but not 1
 
-        if entropy == 0:
+        if entropy == 0: # contradiction found
             return
-        elif entropy == self.max_entropy + 1:
+        elif entropy == self.max_entropy + 1: # all positions certain
             return board
         else:
-            for e in board[pos]:
+            for e in board[pos]: # recurse through all options of lowest entropy pos
                 board_copy = board.copy()
                 board_copy[pos] = {e}
-                r = self.solve(board_copy)
+                r = self.solve(board_copy) # recursion my beloved
                 if r is not None:
-                    return r
+                    return r # this is how the final solved board gets passed up the recursion tree
 
-    _stats_path = "stats.json"
+    _STATS_PATH = "stats.json"
 
     @classmethod
     def load_stats(self):
         try:
-            with open(Puzzle._stats_path, "r") as f:
+            with open(Puzzle._STATS_PATH, "r") as f:
                 try:
                     return json.load(f)
                 except:
-                    if "yes" == input("Cannot read stats , do you wish to reset \"{Puzzle._stats_path}\"? (yes/no)"):
+                    if "yes" == input("Cannot read stats , do you wish to reset \"{Puzzle._STATS_PATH}\"? (yes/no)"):
                         Puzzle.reset_all_stats()
                     else:
                         return {}
         except:
-            if "yes" == input("Cannot open \"{Puzzle._stats_path}\", do you wish to reset it? (yes/no)"):
+            if "yes" == input("Cannot open \"{Puzzle._STATS_PATH}\", do you wish to reset it? (yes/no)"):
                 Puzzle.reset_all_stats()
             else:
                 return {}
     
     @classmethod
     def write_stats(self, stats):
-        with open(Puzzle._stats_path, "w") as f:
+        with open(Puzzle._STATS_PATH, "w") as f:
             json.dump(stats, f)
     
     @classmethod
     def reset_all_stats(self):
-        with open(Puzzle._stats_path, "w") as f:
+        with open(Puzzle._STATS_PATH, "w") as f:
             json.dump({}, f)
             return {}
 
@@ -112,6 +112,7 @@ class Puzzle():
         
         Puzzle.write_stats(stats)
 
+    # alternative version of solve with more fancy user feedback and performance tracking
     def solve_fancy(self, board=None, n=0, t=0):
         if board is None: board = self.start_board.copy()
         if n == 0: t = time()

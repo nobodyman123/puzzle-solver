@@ -57,13 +57,15 @@ def update_stats_frame():
 
     stats = Puzzle.load_stats()
     try:
+        stats_selected.config(text = selected_puzzle.__name__)
         a = stats[selected_puzzle.__name__]["average_recorded_solve_speed"]
         f = stats[selected_puzzle.__name__]["fastest_recorded_solve_speed"]
-        average.config(text = f"{a:.3f} s")
-        fastest.config(text = f"{f:.3f} s")
-    except KeyError:
-        average.config(text = "N/A")
-        fastest.config(text = "N/A")
+        stats_average.config(text = f"{a:.3f} s")
+        stats_fastest.config(text = f"{f:.3f} s")
+    except (KeyError, AttributeError):
+        stats_selected.config(text = "N/A")
+        stats_average.config(text = "N/A")
+        stats_fastest.config(text = "N/A")
 
 def load_puzzle():
     global selected_puzzle
@@ -83,16 +85,14 @@ def load_puzzle():
     try:
         for child in input_frame.winfo_children():
             child.destroy()
-
         selected_gui = selected_puzzle.input_gui(input_frame)
-        update_stats_frame()
         print(selected_name)
     except NotImplementedError as err:
         selected_puzzle = None
         selected_gui = None
-        average.config(text = "N/A")
-        fastest.config(text = "N/A")
         print(f"[ERR] {err}")
+    finally:    
+        update_stats_frame()
 
 class StdoutRedirector():
     def __init__(self, text_area: tk.Label):
@@ -178,14 +178,18 @@ side_frame.rowconfigure(1, weight = 1)
 stats_frame = tk.LabelFrame(side_frame, text = "Statistics")
 stats_frame.grid(row = 0, sticky = tk.NSEW)
 
-tk.Label(stats_frame, text = "Average:").grid(row = 0, column = 0, sticky = tk.W)
-tk.Label(stats_frame, text = "Fastest:").grid(row = 1, column = 0, sticky = tk.W)
+tk.Label(stats_frame, text = "Puzzle:").grid(row = 0, column = 0, sticky = tk.W)
+tk.Label(stats_frame, text = "Average:").grid(row = 1, column = 0, sticky = tk.W)
+tk.Label(stats_frame, text = "Fastest:").grid(row = 2, column = 0, sticky = tk.W)
 
-average = tk.Label(stats_frame, text = "N/A")
-average.grid(row = 0, column = 1, sticky = tk.NSEW)
+stats_selected = tk.Label(stats_frame, text = "N/A")
+stats_selected.grid(row = 0, column = 1, sticky = tk.NSEW)
 
-fastest = tk.Label(stats_frame, text = "N/A")
-fastest.grid(row = 1, column = 1, sticky = tk.NSEW)
+stats_average = tk.Label(stats_frame, text = "N/A")
+stats_average.grid(row = 1, column = 1, sticky = tk.NSEW)
+
+stats_fastest = tk.Label(stats_frame, text = "N/A")
+stats_fastest.grid(row = 2, column = 1, sticky = tk.NSEW)
 
 # side.puzzles
 puzzles_frame = tk.LabelFrame(side_frame, text = "Puzzles")
