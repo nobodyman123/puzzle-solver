@@ -42,7 +42,7 @@ class Puzzle():
         if board is None: board = self.start_board.copy()
 
         self.reduce(board) # use reduction rules defined in reduce method
-        pos, entropy = self.get_entropy(board) # finds a position with shortest set length but not 1
+        pos, entropy = self.get_entropy(board) # finds a position with shortest set length but not 1, 0 and max_entropy + 1 are special cases
 
         if entropy == 0: # contradiction found
             return
