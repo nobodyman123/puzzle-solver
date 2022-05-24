@@ -15,7 +15,7 @@ class JigsawSudoku(Puzzle):
             board[i,:] -= value
             board[:,j] -= value
             for pos in zip(*np.where(boxes == boxes[i,j])):
-                board[pos] = board[pos] - value
+                board[pos] = board[pos] - value # inplace subtract (-=) makes it so no solution is found
             board[i,j] = value
 
 def main():
