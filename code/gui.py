@@ -42,8 +42,6 @@ def load_puzzle_list():
     
     for i, puzzle in enumerate(puzzles):
         puzzles_list.insert(i, str(puzzle))
-    
-    return puzzles
 
 def refresh_puzzle_list():
     global puzzles_list
@@ -62,7 +60,11 @@ def update_stats_frame():
         f = stats[selected_puzzle.__name__]["fastest_recorded_solve_speed"]
         stats_average.config(text = f"{a:.3f} s")
         stats_fastest.config(text = f"{f:.3f} s")
-    except (KeyError, AttributeError):
+    except KeyError: # when selected_puzzle not in stats.json
+        stats_selected.config(text = selected_puzzle.__name__)
+        stats_average.config(text = "N/A")
+        stats_fastest.config(text = "N/A")
+    except AttributeError: # when selecte_puzzle == None
         stats_selected.config(text = "N/A")
         stats_average.config(text = "N/A")
         stats_fastest.config(text = "N/A")
@@ -77,8 +79,8 @@ def load_puzzle():
         print("[ERR] Please select a puzzle to load")
         return
     
-    p, = puzzles_list.curselection()
-    selected_name = puzzles[p]
+    selected_index, = puzzles_list.curselection()
+    selected_name = puzzles_list.get(selected_index)
     exec(f"from {selected_name} import {selected_name}")
     selected_puzzle = eval(selected_name)
 
@@ -204,7 +206,6 @@ load_button = tk.Button(puzzles_frame, text = "Load", padx = 10, command = load_
 load_button.grid(row = 1, column = 0, padx = 5)
 tk.Button(puzzles_frame, text = "Refresh", padx = 10, command = refresh_puzzle_list).grid(row = 1, column = 1, padx = 5)
 
-puzzles = load_puzzle_list()
 selected_puzzle = None
 selected_gui = None
 
