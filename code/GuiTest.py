@@ -15,7 +15,7 @@ class TestGui(PuzzleGui):
     def set_board_state(self, board):
         self.my_label.configure(text = board)
 
-class Test(Puzzle):
+class GuiTest(Puzzle):
     def __init__(self, start_board: np.ndarray, reduction_args=None):
         self.i = start_board
 
@@ -35,9 +35,9 @@ class Test(Puzzle):
     input_gui = TestGui
 
 def main():
-    print(Test.load_stats())
-    Test.reset_my_stats()
-    print(Test.load_stats())
+    print(GuiTest.load_stats())
+    GuiTest.reset_my_stats()
+    print(GuiTest.load_stats())
 
 if __name__ == "__main__":
     main()
