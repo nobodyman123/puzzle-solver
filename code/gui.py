@@ -93,7 +93,7 @@ def load_puzzle():
         selected_puzzle = None
         selected_gui = None
         print(f"[ERR] {err}")
-    finally:    
+    finally:
         update_stats_frame()
 
 class StdoutRedirector():
