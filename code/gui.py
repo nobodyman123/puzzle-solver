@@ -34,11 +34,8 @@ def solve():
 def load_puzzle_list():
     global puzzles_list
 
-    puzzles = [e[:-3] for e in listdir() if e[-3:] == ".py"]
-    IGNORE = ["gui", "puzzle_solver"]
-    
-    for e in IGNORE:
-        if e in puzzles: puzzles.remove(e)
+    IGNORE = ["gui.py", "puzzle_solver.py"]
+    puzzles = [e[:-3] for e in listdir() if e[-3:] == ".py" and not e in IGNORE]
     
     for i, puzzle in enumerate(puzzles):
         puzzles_list.insert(i, str(puzzle))
@@ -208,5 +205,6 @@ tk.Button(puzzles_frame, text = "Refresh", padx = 10, command = refresh_puzzle_l
 
 selected_puzzle = None
 selected_gui = None
+load_puzzle_list()
 
 tk.mainloop()

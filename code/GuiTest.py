@@ -6,7 +6,8 @@ from puzzle_solver import Puzzle, PuzzleGui
 
 class TestGui(PuzzleGui):
     def __init__(self, master=None):
-        self.my_label = tk.Label(master, text = "0")
+        stats = Puzzle.load_stats()
+        self.my_label = tk.Label(master, text = stats["GuiTest"]["amount_recorded"] if "GuiTest" in stats else 0)
         self.my_label.pack()
     
     def get_board_state(self):
@@ -35,9 +36,9 @@ class GuiTest(Puzzle):
     input_gui = TestGui
 
 def main():
-    print(GuiTest.load_stats())
+    #print(GuiTest.load_stats())
     GuiTest.reset_my_stats()
-    print(GuiTest.load_stats())
+    #print(GuiTest.load_stats())
 
 if __name__ == "__main__":
     main()
