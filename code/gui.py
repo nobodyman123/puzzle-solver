@@ -34,8 +34,8 @@ def solve():
 def load_puzzle_list():
     global puzzles_list
 
-    IGNORE = ["gui.py", "puzzle_solver.py"]
-    puzzles = [e[:-3] for e in listdir() if e[-3:] == ".py" and not e in IGNORE]
+    IGNORE = ["gui", "puzzle_solver"]
+    puzzles = [e[:-3] for e in listdir() if e[-3:] == ".py" and not e[:-3] in IGNORE]
     
     for i, puzzle in enumerate(puzzles):
         puzzles_list.insert(i, str(puzzle))
@@ -198,6 +198,7 @@ puzzles_frame.rowconfigure(1, weight = 1)
 
 puzzles_list = tk.Listbox(puzzles_frame, selectmode = tk.SINGLE)
 puzzles_list.grid(row = 0, column = 0, columnspan = 2, sticky = tk.NSEW)
+load_puzzle_list()
 
 load_button = tk.Button(puzzles_frame, text = "Load", padx = 10, command = load_puzzle)
 load_button.grid(row = 1, column = 0, padx = 5)
@@ -205,6 +206,5 @@ tk.Button(puzzles_frame, text = "Refresh", padx = 10, command = refresh_puzzle_l
 
 selected_puzzle = None
 selected_gui = None
-load_puzzle_list()
 
 tk.mainloop()
