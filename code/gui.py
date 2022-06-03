@@ -104,7 +104,7 @@ class StdoutRedirector():
     def flush(self):
         pass
 
-# do stuff
+# root
 root = tk.Tk()
 root.minsize(550, 350)
 root.title("Puzzle Solver")
@@ -133,7 +133,7 @@ toolbar_frame.grid(row = 0, column = 0, sticky = tk.N)
 solve_button = tk.Button(main_frame, text = "SOLVE", command = solve, padx = 5)
 solve_button.grid(row = 1, column = 1, columnspan = 10)
 
-# black magic
+# black magic (keeps input_frame square)
 def set_aspect(content_frame, pad_frame, aspect_ratio):
     # a function which places a frame within a containing frame, and
     # then forces the inner frame to keep a specific aspect ratio
