@@ -1,17 +1,10 @@
 import numpy as np
 import tkinter as tk
 from puzzle_solver import Puzzle, PuzzleGui
-
-class JigokuGui(PuzzleGui):
-    def __init__(self, master=None):
-        self.master = master
-        tk.Label(master, text = "here will come the jigoku gui").pack()
     
 class Jigoku(Puzzle):
     def __init__(self, start_board: np.ndarray, comps_hor, comps_vert):
         super().__init__(start_board, (comps_hor, comps_vert))
-    
-    input_gui = JigokuGui
 
     def reduce(self, board):
         comps_hor, comps_vert = self.reduction_args

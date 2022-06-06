@@ -8,7 +8,7 @@ class TestGui(PuzzleGui):
     def __init__(self, master=None):
         stats = Puzzle.load_stats()
         self.my_label = tk.Label(master, text = stats["GuiTest"]["amount_recorded"] if "GuiTest" in stats else 0)
-        self.my_label.pack()
+        self.my_label.place(anchor = tk.CENTER, relx = 0.5, rely = 0.5)
     
     def get_board_state(self):
         return int(self.my_label.cget("text")),
