@@ -14,25 +14,24 @@ class TestGui(PuzzleGui):
         return int(self.my_label.cget("text")),
 
     def set_board_state(self, board):
-        self.my_label.configure(text = board)
+        self.my_label.configure(text = max(board[0,0]))
 
 class GuiTest(Puzzle):
-    def __init__(self, start_board: np.ndarray, reduction_args=None):
-        self.i = start_board
+    def __init__(self, i: np.ndarray, reduction_args=None):
+        super().__init__(np.array([[{i}]]), reduction_args)
 
-    def solve_fancy(self):
-        target_time = 1 + random()
-        solve_time = 0
-        t1 = time()
+    def reduce(self, board):
+        if max(board[0,0]) != max(self.start_board[0,0]) + 1:
+            t2 = 1 + random()
+            t = 0
+            t1 = time()
+            
+            while t < t2:
+                t = time() - t1
+                print(f"{t} s")
+            
+            board[0,0] = {max(board[0,0]) + 1}
 
-        while solve_time < target_time:
-            solve_time = time() - t1
-            print(f"{solve_time} s")
-        print(f"DONE ({solve_time} s)")
-        
-        self._update_stats(solve_time)
-        return self.i + 1
-    
     input_gui = TestGui
 
 def main():

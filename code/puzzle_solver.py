@@ -93,27 +93,33 @@ class Puzzle():
             del stats[self.__name__]
             Puzzle.write_stats(stats)
 
-    def _update_stats(self, solve_time):
-        stats = Puzzle.load_stats()
-        
-        puzzle_name = self.__class__.__name__
-        if puzzle_name in stats:
-            this_puzzle = stats[puzzle_name]
-            this_puzzle["amount_recorded"] += 1
-            this_puzzle["average_recorded_solve_speed"] = (this_puzzle["average_recorded_solve_speed"] * (this_puzzle["amount_recorded"] - 1) + (solve_time)) / this_puzzle["amount_recorded"]
-            if solve_time < this_puzzle["fastest_recorded_solve_speed"]:
-                this_puzzle["fastest_recorded_solve_speed"] = solve_time
-        else:
-            stats[puzzle_name] = {
-                "amount_recorded": 1,
-                "average_recorded_solve_speed": solve_time,
-                "fastest_recorded_solve_speed": solve_time
-            }
-        
-        Puzzle.write_stats(stats)
-
     # alternative version of solve with more fancy user feedback and performance tracking
     def solve_fancy(self, board=None, n=0, t=0):
+        def done(r):
+            end_time = time()
+            solve_time = end_time - t
+            
+            print(f"\n{r}\a")
+            print(f"DONE ({solve_time:.3f} s)")
+
+            stats = Puzzle.load_stats()
+            
+            puzzle_name = self.__class__.__name__
+            if puzzle_name in stats:
+                this_puzzle = stats[puzzle_name]
+                this_puzzle["amount_recorded"] += 1
+                this_puzzle["average_recorded_solve_speed"] = (this_puzzle["average_recorded_solve_speed"] * (this_puzzle["amount_recorded"] - 1) + (solve_time)) / this_puzzle["amount_recorded"]
+                if solve_time < this_puzzle["fastest_recorded_solve_speed"]:
+                    this_puzzle["fastest_recorded_solve_speed"] = solve_time
+            else:
+                stats[puzzle_name] = {
+                    "amount_recorded": 1,
+                    "average_recorded_solve_speed": solve_time,
+                    "fastest_recorded_solve_speed": solve_time
+                }
+            
+            Puzzle.write_stats(stats)
+        
         if board is None: board = self.start_board.copy()
         if n == 0: t = time()
 
@@ -132,6 +138,9 @@ class Puzzle():
             if entropy == 0:
                 return
             else:
+                # if start_board was not already solved
+                if n == 0 and board.all() != self.start_board.all():
+                    done(board)
                 return board
         else:
             for e in board[pos]:
@@ -140,12 +149,7 @@ class Puzzle():
                 r = self.solve_fancy(board_copy, n + 1, t)
                 if r is not None:
                     if n == 0:
-                        end_time = time()
-                        solve_time = end_time - t
-                        
-                        print(f"\n{r}\a")
-                        print(f"DONE ({solve_time:.3f} s)")
-                        self._update_stats(solve_time)
+                        done(r)
                     return r
             if n == 0:
                 print(f"\a")
