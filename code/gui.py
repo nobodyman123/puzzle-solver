@@ -85,7 +85,7 @@ def load_puzzle():
         for child in input_frame.winfo_children():
             child.destroy()
         selected_gui = selected_puzzle.input_gui(input_frame)
-        print(selected_name)
+        print(f"Loaded {selected_name}")
     except NotImplementedError as err:
         selected_puzzle = None
         selected_gui = None
