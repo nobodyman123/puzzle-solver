@@ -74,10 +74,10 @@ def main():
         if e != 0:
             board[i] = {e}
     
-    skyscrapers_top =    [3, 2, 4, 2, 3, 2, 3, 4, 1]
-    skyscrapers_right =  [1, 4, 3, 3, 2, 2, 2, 5, 3]
-    skyscrapers_bottom = [4, 3, 1, 3, 2, 4, 2, 2, 5]
-    skyscrapers_left =   [3, 2, 3, 3, 3, 1, 2, 3, 3]
+    skyscrapers_top =    [3, 2, 4, 2, 3, 2, 3, 4, 1] # left to right
+    skyscrapers_right =  [1, 4, 3, 3, 2, 2, 2, 5, 3] # top to bottom
+    skyscrapers_bottom = [4, 3, 1, 3, 2, 4, 2, 2, 5] # left to right
+    skyscrapers_left =   [3, 2, 3, 3, 3, 1, 2, 3, 3] # top to bottom
 
     p = SkyscraperSudoku(board, skyscrapers_top, skyscrapers_right, skyscrapers_bottom, skyscrapers_left)
     p.solve_fancy()
