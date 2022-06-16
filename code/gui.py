@@ -104,7 +104,7 @@ class StdoutRedirector():
     def flush(self):
         pass
 
-# root
+#region root
 root = tk.Tk()
 root.minsize(550, 350)
 root.title("Puzzle Solver")
@@ -112,14 +112,16 @@ root.iconphoto(True, tk.PhotoImage(file = "icon.png"))
 root.rowconfigure(0, weight=1)
 root.rowconfigure(1, weight=0)
 root.columnconfigure(0, weight = 1)
+#endregion
 
-# log
+#region log
 log = tk.Label(root, anchor = tk.W, justify = tk.LEFT, height = 1, text = "Welcome to Puzzle Solver")
 log.grid(row = 1, column = 0, sticky = tk.E + tk.S + tk.W, padx = 1)
 
 sys.stdout = StdoutRedirector(log)
+#endregion
 
-# main
+#region main
 main_frame = tk.Frame(root)
 main_frame.grid(row = 0, column = 0, sticky = tk.NSEW)
 for i in range(11):
@@ -166,14 +168,15 @@ main_frame.rowconfigure(0, weight = 1)
 main_frame.columnconfigure(1, weight = 1)
 
 set_aspect(input_frame, pad_frame, aspect_ratio=1)
+#endregion
 
-# side
+#region side
 side_frame = tk.Frame(root, bg = "blue")
 side_frame.grid(row = 0, column = 1, rowspan = 2, sticky = tk.NSEW)
 side_frame.rowconfigure(0, weight = 0)
 side_frame.rowconfigure(1, weight = 1)
 
-# side.stats
+#region side.stats
 stats_frame = tk.LabelFrame(side_frame, text = "Statistics")
 stats_frame.grid(row = 0, sticky = tk.NSEW)
 
@@ -189,8 +192,9 @@ stats_average.grid(row = 1, column = 1, sticky = tk.NSEW)
 
 stats_fastest = tk.Label(stats_frame, text = "N/A")
 stats_fastest.grid(row = 2, column = 1, sticky = tk.NSEW)
+#endregion
 
-# side.puzzles
+#region side.puzzles
 puzzles_frame = tk.LabelFrame(side_frame, text = "Puzzles")
 puzzles_frame.grid(row = 1, sticky = tk.NSEW)
 puzzles_frame.rowconfigure(0, weight = 1)
@@ -203,6 +207,8 @@ load_puzzle_list()
 load_button = tk.Button(puzzles_frame, text = "Load", padx = 10, command = load_puzzle)
 load_button.grid(row = 1, column = 0, padx = 5)
 tk.Button(puzzles_frame, text = "Refresh", padx = 10, command = refresh_puzzle_list).grid(row = 1, column = 1, padx = 5)
+#endregion
+#endregion
 
 selected_puzzle = None
 selected_gui = None
