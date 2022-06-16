@@ -2,17 +2,13 @@ import numpy as np
 import json
 from time import time
 
-# TODO: 
-# 1) GUI
-#       puzzle specific visual input
-#       toolbar
-# 2) settings
-
 class PuzzleGui():
-    def __init__(self, master = None):
+    def __init__(self, master):
         raise NotImplementedError(f"Method \"{self.__class__.__name__}.__init__\" not implemented")
+    
     def get_board_state(self):
         raise NotImplementedError(f"Method \"{self.__class__.__name__}.get_board_state\" not implemented")
+    
     def set_board_state(self, board):
         raise NotImplementedError(f"Method \"{self.__class__.__name__}.set_board_state\" not implemented")
 
@@ -58,6 +54,7 @@ class Puzzle():
 
     _STATS_PATH = "stats.json"
 
+    # this is a mess, might re-write sometime
     @classmethod
     def load_stats(self):
         try:
@@ -65,13 +62,13 @@ class Puzzle():
                 try:
                     return json.load(f)
                 except:
-                    if "yes" == input("Cannot read stats , do you wish to reset \"{Puzzle._STATS_PATH}\"? (yes/no)"):
-                        Puzzle.reset_all_stats()
+                    if "yes" == input(f"Cannot read stats , do you wish to reset \"{Puzzle._STATS_PATH}\"? (yes/no) "):
+                        return Puzzle.reset_all_stats()
                     else:
                         return {}
         except:
-            if "yes" == input("Cannot open \"{Puzzle._STATS_PATH}\", do you wish to reset it? (yes/no)"):
-                Puzzle.reset_all_stats()
+            if "yes" == input(f"Cannot open \"{Puzzle._STATS_PATH}\", do you wish to reset it? (yes/no) "):
+                return Puzzle.reset_all_stats()
             else:
                 return {}
     
@@ -138,9 +135,6 @@ class Puzzle():
             if entropy == 0:
                 return
             else:
-                # if start_board was not already solved
-                if n == 0 and board.all() != self.start_board.all():
-                    done(board)
                 return board
         else:
             for e in board[pos]:
