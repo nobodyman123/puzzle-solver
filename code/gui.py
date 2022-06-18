@@ -40,11 +40,10 @@ def solve():
             puzzle = selected_puzzle(*puzzle_args)
             solved_board = puzzle.solve_fancy()
 
-            if puzzle.__class__ == selected_puzzle: #check if same puzzle is still selected when done solving
-                selected_gui.set_board_state(solved_board)
-                update_stats_frame()
-            else:
-                return
+            #check if same puzzle is still selected when done solving
+            if puzzle.__class__ != selected_puzzle: return
+            selected_gui.set_board_state(solved_board)
+            update_stats_frame()
         except NotImplementedError as err:
             print(f"[ERR] {err}")
         finally:
