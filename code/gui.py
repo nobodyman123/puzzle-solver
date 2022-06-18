@@ -4,30 +4,51 @@ from os import listdir
 from threading import Thread
 from puzzle_solver import Puzzle
 
+def set_state(i):
+    global selected_puzzle
+    global selected_gui
+    global input_frame
+    global solve_button
+
+    if i == 0: # no puzzle selected
+        selected_puzzle = None
+        selected_gui = None
+        for child in input_frame.winfo_children():
+            child.destroy()
+        solve_button.configure(state = tk.DISABLED)
+    elif i == 1: # puzzle selected but no gui
+        selected_gui = None
+        for child in input_frame.winfo_children():
+            child.destroy()
+        solve_button.configure(state = tk.DISABLED)
+    elif i == 2: # puzzle selected with gui
+        solve_button.configure(state = tk.NORMAL)
+    elif i == 3: # solving
+        solve_button.configure(state = tk.DISABLED)
+    
+    update_stats_frame()
+
 def solve():
     def sub_solve():
         global selected_puzzle
         global selected_gui
         global solve_button
-        global load_button
         
-        if selected_puzzle is None:
-            print("[ERR] No puzzle selected")
-            return
-        
-        solve_button.config(state = tk.DISABLED)
-        load_button.config(state = tk.DISABLED)
+        set_state(3)
         try:
             puzzle_args = selected_gui.get_board_state()
             puzzle = selected_puzzle(*puzzle_args)
             solved_board = puzzle.solve_fancy()
-            selected_gui.set_board_state(solved_board)
-            update_stats_frame()
+
+            if puzzle.__class__ == selected_puzzle: #check if same puzzle is still selected when done solving
+                selected_gui.set_board_state(solved_board)
+                update_stats_frame()
+            else:
+                return
         except NotImplementedError as err:
             print(f"[ERR] {err}")
         finally:
-            solve_button.config(state = tk.NORMAL)
-            load_button.config(state = tk.NORMAL)
+            set_state(2)
     
     Thread(target = sub_solve).start()
 
@@ -45,10 +66,15 @@ def refresh_puzzle_list():
 
     puzzles_list.delete(0, tk.END)
     load_puzzle_list()
+    set_state(0)
+
     print("Puzzle list refreshed")
 
 def update_stats_frame():
     global selected_puzzle
+    global stats_selected
+    global stats_average
+    global stats_fastest
 
     stats = Puzzle.load_stats()
     try:
@@ -66,32 +92,33 @@ def update_stats_frame():
         stats_average.config(text = "N/A")
         stats_fastest.config(text = "N/A")
 
-def load_puzzle():
+def load_puzzle(*_):
+    global puzzles_list
     global selected_puzzle
-    global solve_button
-    global input_frame
     global selected_gui
-
-    if not puzzles_list.curselection():
-        print("[ERR] Please select a puzzle to load")
+    
+    index, = puzzles_list.curselection()
+    name = puzzles_list.get(index)
+    try:
+        exec(f"from {name} import {name}")
+        selected_puzzle = eval(name)
+        selected_gui = selected_puzzle.input_gui(input_frame)
+        
+        print(f"Loaded {name}")
+        set_state(2)
+    except SyntaxError:
+        print(f"[ERR] name: {name!r} is not correctly formatted")
+        set_state(0)
+        return
+    except ImportError:
+        print(f"[ERR] {name} is not a puzzle")
+        set_state(0)
+        return
+    except NotImplementedError as err:
+        print(f"[ERR] {err}")
+        set_state(1)
         return
     
-    selected_index, = puzzles_list.curselection()
-    selected_name = puzzles_list.get(selected_index)
-    exec(f"from {selected_name} import {selected_name}")
-    selected_puzzle = eval(selected_name)
-
-    try:
-        for child in input_frame.winfo_children():
-            child.destroy()
-        selected_gui = selected_puzzle.input_gui(input_frame)
-        print(f"Loaded {selected_name}")
-    except NotImplementedError as err:
-        selected_puzzle = None
-        selected_gui = None
-        print(f"[ERR] {err}")
-    finally:
-        update_stats_frame()
 
 class StdoutRedirector():
     def __init__(self, text_area: tk.Label):
@@ -132,7 +159,7 @@ toolbar_frame = tk.Frame(main_frame, relief = tk.GROOVE, borderwidth = 2, width 
 toolbar_frame.grid(row = 0, column = 0, sticky = tk.N)
 
 # main.solve
-solve_button = tk.Button(main_frame, text = "SOLVE", command = solve, padx = 5)
+solve_button = tk.Button(main_frame, text = "SOLVE", padx = 5, command = solve, state = tk.DISABLED)
 solve_button.grid(row = 1, column = 1, columnspan = 10)
 
 # keeps input_frame square (black magic)
@@ -201,12 +228,11 @@ puzzles_frame.rowconfigure(0, weight = 1)
 puzzles_frame.rowconfigure(1, weight = 1)
 
 puzzles_list = tk.Listbox(puzzles_frame, selectmode = tk.SINGLE)
-puzzles_list.grid(row = 0, column = 0, columnspan = 2, sticky = tk.NSEW)
+puzzles_list.grid(row = 0, sticky = tk.NSEW)
+puzzles_list.bind("<<ListboxSelect>>", load_puzzle)
 load_puzzle_list()
 
-load_button = tk.Button(puzzles_frame, text = "Load", padx = 10, command = load_puzzle)
-load_button.grid(row = 1, column = 0, padx = 5)
-tk.Button(puzzles_frame, text = "Refresh", padx = 10, command = refresh_puzzle_list).grid(row = 1, column = 1, padx = 5)
+tk.Button(puzzles_frame, text = "Refresh", padx = 10, command = refresh_puzzle_list).grid(row = 1, padx = 5)
 #endregion
 #endregion
 
