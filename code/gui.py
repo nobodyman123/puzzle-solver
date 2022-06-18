@@ -97,6 +97,7 @@ def load_puzzle(*_):
     global selected_puzzle
     global selected_gui
     
+    set_state(0) # to clear the previously loaded puzzle
     index, = puzzles_list.curselection()
     name = puzzles_list.get(index)
     try:
