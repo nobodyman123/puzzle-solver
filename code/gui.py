@@ -119,7 +119,6 @@ def load_puzzle(*_):
         print(f"[ERR] {err}")
         set_state(1)
         return
-    
 
 class StdoutRedirector():
     def __init__(self, text_area: tk.Label):
