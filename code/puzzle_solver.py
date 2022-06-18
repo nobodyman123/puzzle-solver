@@ -54,24 +54,19 @@ class Puzzle():
 
     _STATS_PATH = "stats.json"
 
-    # this is a mess, might re-write sometime
     @classmethod
     def load_stats(self):
         try:
             with open(Puzzle._STATS_PATH, "r") as f:
-                try:
-                    return json.load(f)
-                except:
-                    if "yes" == input(f"Cannot read stats , do you wish to reset \"{Puzzle._STATS_PATH}\"? (yes/no) "):
-                        return Puzzle.reset_all_stats()
-                    else:
-                        return {}
-        except:
-            if "yes" == input(f"Cannot open \"{Puzzle._STATS_PATH}\", do you wish to reset it? (yes/no) "):
+                return json.load(f)
+        except FileNotFoundError:
+            return Puzzle.reset_all_stats()
+        except json.decoder.JSONDecodeError:
+            if "yes" == input(f"Problem reading stats, do you wish to reset them? (yes/no) "):
                 return Puzzle.reset_all_stats()
-            else:
-                return {}
-    
+        except Exception as err:
+            print(err)
+
     @classmethod
     def write_stats(self, stats):
         with open(Puzzle._STATS_PATH, "w") as f:
@@ -100,6 +95,7 @@ class Puzzle():
             print(f"DONE ({solve_time:.3f} s)")
 
             stats = Puzzle.load_stats()
+            if stats == None: return
             
             puzzle_name = self.__class__.__name__
             if puzzle_name in stats:
