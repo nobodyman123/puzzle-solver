@@ -131,6 +131,8 @@ class Puzzle():
             if entropy == 0:
                 return
             else:
+                for i, e in np.ndenumerate(board):
+                    board[i] = max(e)
                 return board
         else:
             for e in board[pos]:
