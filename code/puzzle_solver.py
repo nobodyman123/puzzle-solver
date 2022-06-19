@@ -13,7 +13,7 @@ class PuzzleGui():
         raise NotImplementedError(f"Method \"{self.__class__.__name__}.set_board_state\" not implemented")
 
 class Puzzle():
-    def __init__(self, start_board: np.ndarray, reduction_args = None):
+    def __init__(self, start_board: np.ndarray, reduction_args: tuple):
         self.start_board = start_board.copy()
         self.reduction_args = reduction_args
         self.max_entropy = max(len(e) for _, e in np.ndenumerate(start_board))

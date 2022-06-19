@@ -2,8 +2,33 @@ import numpy as np
 from puzzle_solver import Puzzle
 
 class JigsawSudoku(Puzzle):
-    def __init__(self, start_board: np.ndarray, boxes):
-        super().__init__(start_board, boxes)
+    def __init__(self, start_board: np.ndarray, boxes: np.ndarray):
+        # check shapes
+        if start_board.shape != (9,9):
+            raise ValueError(f"start_board has wrong dimensions: {start_board.shape} (should be (9,9))")
+        if boxes.shape != (9,9):
+            raise ValueError(f"boxes has wrong dimensions: {boxes.shape} (should be (9,9))")
+
+        # construct sets from ints
+        board = np.array([[set(range(1,10)) for i in range(9)] for j in range(9)])
+        for i, e in np.ndenumerate(start_board):
+            if e < 0 or e > 9:
+                raise ValueError(f"board: {e} in position {i} not in range(0,10)")
+            if e != 0:
+                board[i] = {e}
+        
+        # check that there are 9 boxes of of len 9
+        temp = {}
+        for i, e in np.ndenumerate(boxes):
+            temp[e] = temp[e] + 1 if e in temp else 1
+        if len(temp) != 9:
+            print(temp)
+            raise ValueError(f"boxes: wrong nr. of boxes: {len(temp)} (should be 9)")
+        for e in temp:
+            if temp[e] != 9:
+                raise ValueError(f"boxes: box nr. {e} is wrong size: {temp[e]} (should be 9)")
+        
+        super().__init__(board, boxes)
     
     def reduce(self, board):
         boxes = self.reduction_args
@@ -20,8 +45,7 @@ class JigsawSudoku(Puzzle):
 
 def main():
     # Input
-    board = np.array([[set(range(1,10)) for i in range(9)] for j in range(9)])
-    board1 = np.array([
+    board = np.array([
         [0, 0, 0, 4, 0, 0, 0, 0, 0],
         [0, 0, 6, 8, 4, 0, 1, 2, 0],
         [0, 0, 0, 0, 6, 9, 0, 0, 0],
@@ -32,10 +56,6 @@ def main():
         [0, 9, 3, 0, 7, 1, 8, 0, 0],
         [0, 0, 0, 0, 0, 4, 0, 0, 0],
     ])
-    for i, e in np.ndenumerate(board1):
-        if e != 0:
-            board[i] = {e}
-
     boxes = np.array([
     [1, 2, 2, 2, 2, 2, 3, 3, 3],
     [1, 2, 2, 2, 4, 4, 4, 3, 3],

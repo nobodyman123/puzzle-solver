@@ -2,8 +2,26 @@ import numpy as np
 from puzzle_solver import Puzzle
 
 class SkyscraperSudoku(Puzzle):
-    def __init__(self, start_board: np.ndarray, skyscrapers_top, skyscrapers_right, skyscrapers_bottom, skyscrapers_left):
-        super().__init__(start_board, (skyscrapers_top, skyscrapers_right, skyscrapers_bottom, skyscrapers_left))
+    def __init__(self, start_board: np.ndarray, skyscrapers: np.ndarray):
+        # check shapes
+        if start_board.shape != (9,9):
+            raise ValueError(f"start_board has wrong dimensions: {start_board.shape} (should be (9,9))")
+        if skyscrapers.shape != (4,9):
+            raise ValueError(f"skyscrapers has wrong dimensions: {skyscrapers.shape} (should be (4,9))")
+
+        # construct sets from ints
+        board = np.array([[set(range(1,10)) for i in range(9)] for j in range(9)])
+        for i, e in np.ndenumerate(start_board):
+            if e < 0 or e > 9:
+                raise ValueError(f"board: {e} in position {i} not in range(0,10)")
+            if e != 0:
+                board[i] = {e}
+        
+        for i, e in np.ndenumerate(skyscrapers):
+            if e < 1 or e > 9:
+                raise ValueError(f"skryscrapers: {e} in position {i} not in range(1,10)")
+        
+        super().__init__(board, skyscrapers)
     
     def reduce(self, board):
         skyscrapers = self.reduction_args
@@ -58,8 +76,7 @@ class SkyscraperSudoku(Puzzle):
 
 def main():
     # Input
-    board = board = np.array([[set(range(1,10)) for i in range(9)] for j in range(9)])
-    board1 = np.array([
+    board = np.array([
         [6, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 3, 0, 0, 0, 0, 0],
         [0, 3, 1, 6, 2, 0, 0, 0, 0],
@@ -70,16 +87,14 @@ def main():
         [0, 0, 0, 0, 0, 7, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 1],
     ])
-    for i, e in np.ndenumerate(board1):
-        if e != 0:
-            board[i] = {e}
-    
-    skyscrapers_top =    [3, 2, 4, 2, 3, 2, 3, 4, 1] # left to right
-    skyscrapers_right =  [1, 4, 3, 3, 2, 2, 2, 5, 3] # top to bottom
-    skyscrapers_bottom = [4, 3, 1, 3, 2, 4, 2, 2, 5] # left to right
-    skyscrapers_left =   [3, 2, 3, 3, 3, 1, 2, 3, 3] # top to bottom
+    skyscrapers = np.array([
+        [3, 2, 4, 2, 3, 2, 3, 4, 1], # top, left to right
+        [1, 4, 3, 3, 2, 2, 2, 5, 3], # right, top to bottom
+        [4, 3, 1, 3, 2, 4, 2, 2, 5], # bottom, left to right
+        [3, 2, 3, 3, 3, 1, 2, 3, 3]  # left, top to bottom
+        ])
 
-    p = SkyscraperSudoku(board, skyscrapers_top, skyscrapers_right, skyscrapers_bottom, skyscrapers_left)
+    p = SkyscraperSudoku(board, skyscrapers)
     p.solve_fancy()
 
 if __name__ == "__main__":
