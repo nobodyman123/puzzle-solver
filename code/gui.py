@@ -13,13 +13,11 @@ def set_state(i):
     if i == 0: # no puzzle selected
         selected_puzzle = None
         selected_gui = None
-        for child in input_frame.winfo_children():
-            child.destroy()
+        [child.destroy() for child in input_frame.winfo_children()]
         solve_button.configure(state = tk.DISABLED)
     elif i == 1: # puzzle selected but no gui
         selected_gui = None
-        for child in input_frame.winfo_children():
-            child.destroy()
+        [child.destroy() for child in input_frame.winfo_children()]
         solve_button.configure(state = tk.DISABLED)
     elif i == 2: # puzzle selected with gui
         solve_button.configure(state = tk.NORMAL)
@@ -51,22 +49,15 @@ def solve():
     
     Thread(target = sub_solve).start()
 
-def load_puzzle_list():
-    global puzzles_list
-
-    IGNORE = ["gui", "puzzle_solver"]
-    puzzles = [e[:-3] for e in listdir() if e[-3:] == ".py" and not e[:-3] in IGNORE]
-    
-    for i, puzzle in enumerate(puzzles):
-        puzzles_list.insert(i, str(puzzle))
-
 def refresh_puzzle_list():
     global puzzles_list
+    IGNORE = ["gui", "puzzle_solver"]
 
     puzzles_list.delete(0, tk.END)
-    load_puzzle_list()
+    puzzles = [file[:-3] for file in listdir() if file[-3:] == ".py" and not file[:-3] in IGNORE]
+    [puzzles_list.insert(i, str(puzzle)) for (i, puzzle) in enumerate(puzzles)]
+    
     set_state(0)
-
     print("Puzzle list refreshed")
 
 def update_stats_frame():
@@ -229,7 +220,7 @@ puzzles_frame.rowconfigure(1, weight = 1)
 puzzles_list = tk.Listbox(puzzles_frame, selectmode = tk.SINGLE)
 puzzles_list.grid(row = 0, sticky = tk.NSEW)
 puzzles_list.bind("<<ListboxSelect>>", load_puzzle)
-load_puzzle_list()
+refresh_puzzle_list()
 
 tk.Button(puzzles_frame, text = "Refresh", padx = 10, command = refresh_puzzle_list).grid(row = 1, padx = 5)
 #endregion
