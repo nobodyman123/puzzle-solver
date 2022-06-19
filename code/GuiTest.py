@@ -17,7 +17,7 @@ class TestGui(PuzzleGui):
         self.my_label.place(anchor = tk.CENTER, relx = 0.5, rely = 0.5)
     
     def get_board_state(self):
-        return int(self.my_label.cget("text")), # yes this has to be a tuple
+        return int(self.my_label["text"]), # yes this has to be a tuple
 
     def set_board_state(self, board):
         self.my_label.configure(text = max(board[0,0]))

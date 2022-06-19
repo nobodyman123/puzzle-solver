@@ -12,7 +12,7 @@ class Jigoku(Puzzle):
             raise ValueError(f"comps_vert has wrong dimensions: {comps_vert.shape} (should be (8,9))")
         
         # construct sets from ints
-        board = np.array([[set(range(1,10)) for i in range(9)] for j in range(9)])
+        board = np.array([[set(range(1,10)) for j in range(9)] for i in range(9)])
         for i, e in np.ndenumerate(start_board):
             if e < 0 or e > 9:
                 raise ValueError(f"board: {e} in position {i} not in range(0,10)")
