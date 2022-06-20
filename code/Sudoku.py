@@ -23,16 +23,18 @@ class SudokuGui(PuzzleGui):
             btn.config(bg = "white", command = lambda: activate(btn))
             self.frame.unbind("<Key>")
         
+        PAD = 3
+
         def set_value(evt):
             key = evt.char
             if key == "":
                 deactivate(self.activated)
             elif key in "123456789":
-                self.activated.configure(text = key)
+                self.activated.configure(text = key, padx = 0)
             elif key == "0":
-                self.activated.configure(text = "")
+                self.activated.configure(text = "", padx = PAD)
 
-        self.buttons = np.array([[tk.Button(self.frame, text = "") for j in range(9)] for i in range(9)])
+        self.buttons = np.array([[tk.Button(self.frame, text = "", padx = PAD) for j in range(9)] for i in range(9)])
         for (i, j), btn in np.ndenumerate(self.buttons):
             btn.grid(row = i, column = j, sticky = tk.NSEW)
             deactivate(btn)
@@ -48,7 +50,7 @@ class SudokuGui(PuzzleGui):
 
     def set_board_state(self, board):
         for pos, value in np.ndenumerate(board):
-            self.buttons[pos].configure(text = str(int(value)))
+            self.buttons[pos].configure(text = str(int(value)), padx = 0)
 
         [btn.configure(state = tk.NORMAL) for (_, btn) in np.ndenumerate(self.buttons)]
 
@@ -84,7 +86,7 @@ class Sudoku(Puzzle):
 def main():
     # Input
     board = np.array([
-        [0, 4, 0, 0, 0, 0, 6, 0, 2],
+        [0, 4, 4, 0, 0, 0, 6, 0, 2],
         [8, 0, 0, 2, 0, 9, 0, 4, 3],
         [0, 9, 2, 0, 0, 0, 0, 0, 0],
         [0, 2, 0, 6, 9, 0, 4, 5, 7],
