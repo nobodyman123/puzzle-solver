@@ -112,7 +112,10 @@ class Puzzle():
                 }
             
             Puzzle.write_stats(stats)
-        
+        def no_sol():
+            print(f"\a")
+            print("NO SOLUTION (please check input)")
+
         if board is None: board = self.start_board.copy()
         if n == 0: t = time()
 
@@ -123,6 +126,7 @@ class Puzzle():
         #print(n, entropy, max([len(e) for (_,e) in np.ndenumerate(board)]))
         
         if entropy == 0:
+            if n == 0: no_sol()
             return
         elif entropy == self.max_entropy + 1:
             # idk if this extra check is necessary but fuck it
@@ -143,6 +147,4 @@ class Puzzle():
                     if n == 0:
                         done(r)
                     return r
-            if n == 0:
-                print(f"\a")
-                print("NO SOLUTION (please check input)")
+            if n == 0: no_sol()
