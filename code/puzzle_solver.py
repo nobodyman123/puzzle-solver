@@ -54,6 +54,7 @@ class Puzzle():
 
     _STATS_PATH = "stats.json"
 
+    #region stats
     @classmethod
     def load_stats(self):
         try:
@@ -81,12 +82,16 @@ class Puzzle():
     @classmethod
     def reset_my_stats(self):
         stats = Puzzle.load_stats()
-        if self.__name__ in stats:    
+        if self.__name__ in stats:
             del stats[self.__name__]
             Puzzle.write_stats(stats)
+    #endregion
 
-    # alternative version of solve with more fancy user feedback and performance tracking
+    # alternative version of solve with fancy user feedback and performance tracking
     def solve_fancy(self, board=None, n=0, t=0):
+        def no_sol():
+            print(f"\a")
+            print("NO SOLUTION (please check input)")
         def done(r):
             end_time = time()
             solve_time = end_time - t
@@ -112,9 +117,6 @@ class Puzzle():
                 }
             
             Puzzle.write_stats(stats)
-        def no_sol():
-            print(f"\a")
-            print("NO SOLUTION (please check input)")
 
         if board is None: board = self.start_board.copy()
         if n == 0: t = time()
@@ -133,6 +135,7 @@ class Puzzle():
             self.reduce(board)
             _, entropy = self.get_entropy(board)
             if entropy == 0:
+                if n == 0: no_sol()
                 return
             else:
                 for i, e in np.ndenumerate(board):

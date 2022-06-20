@@ -40,7 +40,7 @@ def solve():
 
             #check if same puzzle is still selected when done solving
             if puzzle.__class__ != selected_puzzle: return
-            if not solved_board is None: 
+            if not solved_board is None:
                 selected_gui.set_board_state(solved_board)
                 update_stats_frame()
         except NotImplementedError as err:
