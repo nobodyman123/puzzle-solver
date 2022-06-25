@@ -25,8 +25,8 @@ class TestGui(PuzzleGui):
 class GuiTest(Puzzle):
     def __init__(self, i: np.ndarray, reduction_args=None):
         super().__init__(np.array([[{i, -1}]]), reduction_args)
-        # the -1 is there so that max_entropy + 1 is 3 so that we can have entropy = 2 for n = 0
-        # since entropy = 1 is not possible and entropy = max_entropy + 1 would mean the puzzle is solved
+        # the -1 is there so that we can have entropy = 2 for n = 0
+        # since entropy = 1 would mean the puzzle is solved
         # but we dont want that to happen for n = 0, hence the placeholder -1
         self.n = 0
 

@@ -1,3 +1,4 @@
+from logging.config import stopListening
 import numpy as np
 import json
 from time import time
@@ -16,7 +17,6 @@ class Puzzle():
     def __init__(self, start_board: np.ndarray, reduction_args: tuple):
         self.start_board = start_board.copy()
         self.reduction_args = reduction_args
-        self.max_entropy = max(len(e) for _, e in np.ndenumerate(start_board))
     
     input_gui = PuzzleGui
 
@@ -24,25 +24,28 @@ class Puzzle():
         raise NotImplementedError(f"Must implement \"{self.__class__.__name__}.reduce\" method")
 
     def get_entropy(self, board):
-        entropy = self.max_entropy + 1
-        pos = ()
-        for i, e in np.ndenumerate(board):
-            if len(e) == 0:
-                return (), 0
-            elif 1 < len(e) < entropy:
-                pos, entropy = (i, len(e))
-        return pos, entropy
+        if set() in board:
+            return 0, ()
+        
+        lens = [(len(e), pos) for pos, e in np.ndenumerate(board) if len(e) != 1]
+        if lens:
+            return sorted(lens)[0]
+        else:
+            return 1, ()
 
     # you can study this method to understand the basic solving algorithm
     def solve(self, board=None):
         if board is None: board = self.start_board.copy()
 
         self.reduce(board) # use reduction rules defined in reduce method
-        pos, entropy = self.get_entropy(board) # finds a position with shortest set length but not 1, 0 and max_entropy + 1 are special cases
+        entropy, pos = self.get_entropy(board) # finds a position with shortest set length
+        # entropy > 1  => continue
+        # entropy == 1 => solved
+        # entropy == 0 => contradiction
 
         if entropy == 0: # contradiction found
             return
-        elif entropy == self.max_entropy + 1: # all positions certain
+        elif entropy == 1: # all positions certain
             return board
         else:
             for e in board[pos]: # recurse through all options of lowest entropy pos
@@ -122,7 +125,7 @@ class Puzzle():
         if n == 0: t = time()
 
         self.reduce(board)
-        pos, entropy = self.get_entropy(board)
+        entropy, pos = self.get_entropy(board)
 
         print(f"Running for {time() - t:.3f} s", end="\r")
         #print(n, entropy, max([len(e) for (_,e) in np.ndenumerate(board)]))
@@ -130,10 +133,10 @@ class Puzzle():
         if entropy == 0:
             if n == 0: no_sol()
             return
-        elif entropy == self.max_entropy + 1:
+        elif entropy == 1:
             # idk if this extra check is necessary but fuck it
             self.reduce(board)
-            _, entropy = self.get_entropy(board)
+            entropy, _ = self.get_entropy(board)
             if entropy == 0:
                 if n == 0: no_sol()
                 return
